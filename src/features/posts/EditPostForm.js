@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectPostById } from "./postsSlice";
 import { useParams, useNavigate } from "react-router-dom";
-import { selectAllUsers } from "../users/usersSlice";
 import { useUpdatePostMutation, useDeletePostMutation } from "./postsSlice";
+import { useGetUsersQuery } from "../users/usersSlice";
 
 const EditPostForm = () => {
   const { postId } = useParams();
@@ -18,7 +18,7 @@ const EditPostForm = () => {
   const [content, setContent] = useState(post?.body);
   const [userId, setUserId] = useState(post?.userId);
 
-  const users = useSelector(selectAllUsers);
+  const { data: users, isSuccess } = useGetUsersQuery;
 
   if (!post) {
     return (
@@ -54,11 +54,14 @@ const EditPostForm = () => {
     }
   };
 
-  const usersOptions = users.map((user) => (
-    <option key={user.id} value={user.id}>
-      {user.name}
-    </option>
-  ));
+  let usersOptions;
+  if (isSuccess) {
+    usersOptions = users.map((user) => (
+      <option key={user.id} value={user.id}>
+        {user.name}
+      </option>
+    ));
+  }
 
   const onDeletePostClicked = async () => {
     try {

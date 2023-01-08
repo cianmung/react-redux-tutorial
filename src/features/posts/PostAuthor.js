@@ -1,11 +1,13 @@
-import { useSelector } from "react-redux";
-import { selectAllUsers } from "../users/usersSlice";
 import { Link } from "react-router-dom";
+import { useGetUsersQuery } from "../users/usersSlice";
 
 const PostAuthor = ({ userId }) => {
-  const users = useSelector(selectAllUsers);
+  const { data: users, isSuccess } = useGetUsersQuery;
 
-  const author = users.find((user) => user.id === userId);
+  let author;
+  if (isSuccess) {
+    author = users.find((user) => user.id === userId);
+  }
 
   return (
     <span>
